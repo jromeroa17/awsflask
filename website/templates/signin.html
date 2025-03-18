@@ -3,3 +3,23 @@
   {% block title %}
     <title>Sign In</title>
 {% endblock %}
+
+
+  {% block content %}
+    <h2 style="text-align:center; margin:15px 0px;">Sign In</h2>
+    <form method="POST" class="form-group" style="width: 80%; margin: auto;">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Pon tu email:">
+      <br>
+      <label for="username">UserName</label>
+      <input type="text" class="form-control" id="username" name="username" placeholder="Pon tu nombre de usuario:">
+      <br>
+      <label for="password1">Contraseña</label>
+      <input type="password" class="form-control" id="password1" name="password1" placeholder="Pon tu contraseña:">
+      <br>
+      <label for="password2">Confirma tu contraseña</label>
+      <input type="password" class="form-control" id="password2" name="password2" placeholder="Repite la contraseña:">
+      <br>
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+{% endblock %}
