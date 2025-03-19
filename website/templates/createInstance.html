@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>ec2</title>
+{% endblock %}
+
+{% block content %}
+    <h2 style="text-align:center; margin:15px 0px;">Crear Instancias</h2>
+    <form method="POST" class="form-group" style="width: 80%; margin: auto;">
+        <label for="instanceName">Nombre de la Instancia</label>
+         <input type="text" class="form-control" id="instanceName" name="instanceName"
+                placeholder="Escribe el nombre de la instancia:"
+         >
+        <label>Sistema Operativo</label>
+        <input type="radio" name="OS" class="">
+
+
+
+
+    </form>
+{% endblock %}
