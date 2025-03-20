@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash
 from flask import render_template
 
-ec2 = boto3.client('ec2')
+
 views = Blueprint('views', __name__)
 
 @views.route('/')
