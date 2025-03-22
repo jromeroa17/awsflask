@@ -2,9 +2,10 @@ from flask import Blueprint, request, flash
 from flask import render_template
 import boto3
 import botocore.exceptions
+from flask_login import login_user, login_required, current_user, logout_user
 
 
-ec2 = boto3.client('ec2')
+## ec2 = boto3.client('ec2')
 views = Blueprint('views', __name__)
 
 def crearInstancia(name,opsys,keypair,instnum):
@@ -30,9 +31,10 @@ def crearInstancia(name,opsys,keypair,instnum):
 
 @views.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user=current_user)
 
 @views.route('/createInstance', methods=['GET','POST'])
+@login_required
 def create_instance():
     if request.method == "POST":
         name = request.form.get('instanceName')
@@ -46,7 +48,7 @@ def create_instance():
             ec2.create_key_pair(KeyName=keypair)
             crearInstancia(name, opsys, keypair, instnum)
 
-    return render_template('createInstance.html')
+    return render_template('createInstance.html', user=current_user)
 
 amis = {
     'AmazonLinux':'ami-08b5b3a93ed654d19',
