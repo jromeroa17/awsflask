@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+    <title>Instancias</title>
+<style>
+        label {
+            cursor:pointer;
+            margin-top:10px;
+        }
+        input:checked + label {
+            background-color:blue;
+        }
+        form {
+            width:80%;
+            margin:auto;
+        }
+        button.enviar {
+            margin:10px auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2 style="text-align:center; margin:15px 0px;">Mis Instancias</h2>
+    <form method='POST' class="form-group">
+        <ul class="list-groups list-group-flush" id="Instancias">
+          {% for Instancia in user.Instance %}
+          <li class="list-group-item">
+              {{ Instancia.name }}
+              <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="parar{{ Instancia.name }}"
+                   autocomplete="off" value="Parar"
+            >
+            <label class="btn btn-secondary" for="parar">Parar Instancia</label>
+
+              <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="iniciar{{ Instancia.name }}"
+                   autocomplete="off" value="Iniciar"
+            >
+            <label class="btn btn-secondary" for="iniciar">Iniciar Instancia</label>
+
+          </li>
+          {% endfor %}
+        </ul>
+        <button type="submit" class="btn btn-primary enviar">Enviar</button>
+    </form>
+
+{% endblock %}
