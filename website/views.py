@@ -5,7 +5,7 @@ import botocore.exceptions
 from flask_login import login_user, login_required, current_user, logout_user
 
 
-## ec2 = boto3.client('ec2')
+ec2 = boto3.client('ec2')
 views = Blueprint('views', __name__)
 
 def crearInstancia(name,opsys,keypair,instnum):
