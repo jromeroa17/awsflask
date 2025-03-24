@@ -2,7 +2,10 @@ from flask import Blueprint, request, flash
 from flask import render_template
 import boto3
 import botocore.exceptions
-from flask_login import login_user, login_required, current_user, logout_user
+from flask_login import login_required, current_user
+from . import db
+
+from .models import Instancia
 
 
 ec2 = boto3.client('ec2')
@@ -29,6 +32,14 @@ def crearInstancia(name,opsys,keypair,instnum):
     )
     return response
 
+def db_instancia(name,opsys,keypair):
+    response = ec2.describe_instances(Filters=[{'Name': 'tag:Name', 'Values': [name]}])['Reservations']
+    instanceid = response[0]['Instances'][0]['InstanceId']
+    new_instance = Instancia(id=instanceid,name=name, opsys=opsys, keypairs=keypair, user_id=current_user.id)
+    db.session.add(new_instance)
+    db.session.commit()
+
+
 @views.route('/')
 def home():
     return render_template('home.html', user=current_user)
@@ -42,13 +53,39 @@ def create_instance():
         keypair = request.form.get('keypair')
         instnum = int(request.form.get('instnum'))
 
-        try:
-            crearInstancia(name,opsys,keypair,instnum)
-        except botocore.exceptions.ClientError:
-            ec2.create_key_pair(KeyName=keypair)
-            crearInstancia(name, opsys, keypair, instnum)
+        instance = Instancia.query.filter_by(name=name).first()
+
+        if instance:
+            flash("Instancia ya existe", category='error')
+        else:
+            try:
+                crearInstancia(name,opsys,keypair,instnum)
+                db_instancia(name,opsys,keypair)
+                flash("Instancia Creada", category='success')
+            except botocore.exceptions.ClientError:
+                ec2.create_key_pair(KeyName=keypair)
+                crearInstancia(name, opsys, keypair, instnum)
+                db_instancia(name, opsys, keypair)
+                flash("Instancia Creada", category='success')
+
+
 
     return render_template('createInstance.html', user=current_user)
+
+@views.route('/misInstancias', methods=['GET','POST'])
+@login_required
+def mis_instancias():
+
+    if request.method == 'POST':
+        for Instancia in current_user.Instance:
+            orden = request.form.get(f'orden{Instancia.name}')
+            if orden == 'Iniciar':
+                ec2.start_instances(InstanceIds=[Instancia.id])
+                flash("Instancia Iniciada")
+            elif orden == 'Parar':
+                ec2.stop_instances(InstanceIds=[Instancia.id])
+                flash("Instancia Parada")
+    return render_template('misinstancias.html',  user=current_user)
 
 amis = {
     'AmazonLinux':'ami-08b5b3a93ed654d19',
