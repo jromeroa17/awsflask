@@ -75,7 +75,6 @@ def create_instance():
 @views.route('/misInstancias', methods=['GET','POST'])
 @login_required
 def mis_instancias():
-
     if request.method == 'POST':
         for Instancia in current_user.Instance:
             orden = request.form.get(f'orden{Instancia.name}')
