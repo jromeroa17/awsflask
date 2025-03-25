@@ -3,6 +3,9 @@
   {% block title %}
     <title>Instancias</title>
 <style>
+        input[type=radio] {
+            visibility:hidden;
+        }
         label {
             cursor:pointer;
             margin-top:10px;
@@ -21,26 +24,36 @@
 {% endblock %}
 
 {% block content %}
-    <h2 style="text-align:center; margin:15px 0px;">Mis Instancias</h2>
+    <h2 class="text-center mt-4">Mis Instancias</h2>
     <form method='POST' class="form-group">
-        <ul class="list-groups list-group-flush" id="Instancias">
-          {% for Instancia in user.Instance %}
-          <li class="list-group-item">
-              {{ Instancia.name }}
-              <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="parar{{ Instancia.name }}"
-                   autocomplete="off" value="Parar"
-            >
-            <label class="btn btn-secondary" for="parar">Parar Instancia</label>
-
-              <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="iniciar{{ Instancia.name }}"
-                   autocomplete="off" value="Iniciar"
-            >
-            <label class="btn btn-secondary" for="iniciar">Iniciar Instancia</label>
-
-          </li>
-          {% endfor %}
-        </ul>
+        <table class="table">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Sistema Operativo</th>
+                    <th scope="col">Iniciar</th>
+                    <th scope="col">Parar</th>
+                </tr>
+              {% for Instancia in user.Instance %}
+                <tr>
+                    <th scope="row">{{ Instancia.name }}</th>
+                    <td>{{ Instancia.opsys }}</td>
+                    <td>
+                        <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="parar{{ Instancia.name }}"
+                            autocomplete="off" value="Parar"
+                         >
+                        <label class="btn btn-secondary" for="parar{{ Instancia.name }}">Parar Instancia</label>
+                    </td>
+                    <td>
+                        <input type="radio" class="btn-check" name="orden{{ Instancia.name }}" id="iniciar{{ Instancia.name }}"
+                            autocomplete="off" value="Iniciar"
+                        >
+                        <label class="btn btn-secondary" for="iniciar{{ Instancia.name }}">Iniciar Instancia</label>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
         <button type="submit" class="btn btn-primary enviar">Enviar</button>
     </form>
+
 
 {% endblock %}
