@@ -4,7 +4,6 @@ import boto3
 import botocore.exceptions
 from flask_login import login_required, current_user
 from . import db
-
 from .models import Instancia
 
 
@@ -12,24 +11,44 @@ ec2 = boto3.client('ec2')
 views = Blueprint('views', __name__)
 
 def crearInstancia(name,opsys,keypair,instnum):
-    response = ec2.run_instances(
-        ImageId=amis[opsys],
-        InstanceType='t2.micro',
-        MinCount=1,
-        MaxCount=instnum,
-        KeyName=keypair,
-        TagSpecifications=[
-            {
-                'ResourceType': 'instance',
-                'Tags': [
-                    {
-                        'Key': 'Name',
-                        'Value': name
-                    },
-                ]
-            },
-        ]
-    )
+    if opsys == 'WinServer':
+        response = ec2.run_instances(
+            ImageId=amis[opsys],
+            InstanceType='t3.micro',
+            MinCount=1,
+            MaxCount=1,
+            KeyName=keypair,
+            TagSpecifications=[
+                {
+                    'ResourceType': 'instance',
+                    'Tags': [
+                        {
+                            'Key': 'Name',
+                            'Value': name
+                        },
+                    ]
+                },
+            ]
+        )
+    else:
+        response = ec2.run_instances(
+            ImageId=amis[opsys],
+            InstanceType='t2.micro',
+            MinCount=1,
+            MaxCount=1,
+            KeyName=keypair,
+            TagSpecifications=[
+                {
+                    'ResourceType': 'instance',
+                    'Tags': [
+                        {
+                            'Key': 'Name',
+                            'Value': name
+                        },
+                    ]
+                },
+            ]
+        )
     return response
 
 def db_instancia(name,opsys,keypair):
