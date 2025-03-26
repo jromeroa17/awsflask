@@ -10,7 +10,7 @@ from .models import Instancia
 ec2 = boto3.client('ec2')
 views = Blueprint('views', __name__)
 
-def crearInstancia(name,opsys,keypair,instnum):
+def crearInstancia(name,opsys,keypair):
     if opsys == 'WinServer':
         response = ec2.run_instances(
             ImageId=amis[opsys],
@@ -70,7 +70,6 @@ def create_instance():
         name = request.form.get('instanceName')
         opsys = request.form.get('so')
         keypair = request.form.get('keypair')
-        instnum = int(request.form.get('instnum'))
 
         instance = Instancia.query.filter_by(name=name).first()
 
@@ -78,12 +77,12 @@ def create_instance():
             flash("Instancia ya existe", category='error')
         else:
             try:
-                crearInstancia(name,opsys,keypair,instnum)
+                crearInstancia(name,opsys,keypair)
                 db_instancia(name,opsys,keypair)
                 flash("Instancia Creada", category='success')
             except botocore.exceptions.ClientError:
                 ec2.create_key_pair(KeyName=keypair)
-                crearInstancia(name, opsys, keypair, instnum)
+                crearInstancia(name, opsys, keypair)
                 db_instancia(name, opsys, keypair)
                 flash("Instancia Creada", category='success')
 
